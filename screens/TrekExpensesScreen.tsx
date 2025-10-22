@@ -56,23 +56,34 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
         <FlatList
           data={trek.trekExpenseData.expense}
           keyExtractor={(e) => e.name + e.timestamp}
-          renderItem={({ item }) => (
-            <View style={styles.row}>
-              <Text style={styles.text}>
-                {item.name} — ₹{item.amount}
-              </Text>
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <Text style={{ color: item.isActive ? "#06b6d4" : "#94a3b8" }}>
-                  {item.isActive ? "Active" : "Inactive"}
-                </Text>
-                <TouchableOpacity
-                  onPress={() => removeExpense(trekSlug, item.name)}
+          renderItem={({ item }) => {
+            const date = item.timestamp ? new Date(item.timestamp) : null;
+            const when = date ? date.toLocaleString() : "";
+            return (
+              <View style={styles.row}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.text}>
+                    {item.name} — ₹{item.amount}
+                  </Text>
+                  {when ? <Text style={styles.dateText}>{when}</Text> : null}
+                </View>
+                <View
+                  style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
                 >
-                  <Text style={styles.remove}>Remove</Text>
-                </TouchableOpacity>
+                  <Text
+                    style={{ color: item.isActive ? "#06b6d4" : "#94a3b8" }}
+                  >
+                    {item.isActive ? "Active" : "Inactive"}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => removeExpense(trekSlug, item.name)}
+                  >
+                    <Text style={styles.remove}>Remove</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          )}
+            );
+          }}
         />
       </View>
     </View>
@@ -100,5 +111,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   text: { color: "#e6eef8" },
+  dateText: { color: "#94a3b8", fontSize: 12, marginTop: 4 },
   remove: { color: "#f87171" },
 });

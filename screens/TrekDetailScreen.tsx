@@ -146,27 +146,36 @@ export default function TrekDetailScreen({
               <Text style={{ color: "#022", fontWeight: "700" }}>Add</Text>
             </TouchableOpacity>
           </View>
-          {trek.trekExpenseData.expense.map((e) => (
-            <View key={e.name + e.timestamp} style={styles.row}>
-              <Text style={styles.text}>
-                {e.name} — ₹{e.amount}
-              </Text>
-              <View style={{ flexDirection: "row", gap: 8 }}>
-                <TouchableOpacity
-                  onPress={() => toggleExpenseActive(trekSlug, e.name)}
-                >
-                  <Text style={{ color: e.isActive ? "#06b6d4" : "#94a3b8" }}>
-                    {e.isActive ? "Active" : "Inactive"}
+          {trek.trekExpenseData.expense.map((e) => {
+            const date = e.timestamp ? new Date(e.timestamp) : null;
+            const when = date ? date.toLocaleString() : "";
+            return (
+              <View key={e.name + e.timestamp} style={styles.row}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.text}>
+                    {e.name} — ₹{e.amount}
                   </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => removeExpense(trekSlug, e.name)}
+                  {when ? <Text style={styles.dateText}>{when}</Text> : null}
+                </View>
+                <View
+                  style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
                 >
-                  <Text style={styles.remove}>Delete</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => toggleExpenseActive(trekSlug, e.name)}
+                  >
+                    <Text style={{ color: e.isActive ? "#06b6d4" : "#94a3b8" }}>
+                      {e.isActive ? "Active" : "Inactive"}
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => removeExpense(trekSlug, e.name)}
+                  >
+                    <Text style={styles.remove}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
       {/* bottom add bar */}
@@ -230,6 +239,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   text: { color: "#e6eef8" },
+  dateText: { color: "#94a3b8", fontSize: 12, marginTop: 4 },
   remove: { color: "#f87171" },
   bottomBar: {
     position: "absolute",
