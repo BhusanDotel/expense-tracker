@@ -5,6 +5,7 @@ import TrekExpensesScreen from "@/screens/TrekExpensesScreen";
 import TrekPersonsScreen from "@/screens/TrekPersonsScreen";
 import React, { useContext, useState } from "react";
 import {
+  Alert,
   FlatList,
   Image,
   StyleSheet,
@@ -14,7 +15,6 @@ import {
 } from "react-native";
 
 export default function TrekListScreen() {
-  const { state, removeTrek } = useContext(TrekContext);
   const [showHeaderForm, setShowHeaderForm] = useState(false);
   const [selectedTrekSlug, setSelectedTrekSlug] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<
@@ -22,6 +22,7 @@ export default function TrekListScreen() {
   >("summary");
   const [showPersonsList, setShowPersonsList] = useState(false);
   const [showExpensesList, setShowExpensesList] = useState(false);
+  const { state, removeTrek } = useContext(TrekContext);
 
   // Render persons screen when requested
   if (selectedTrekSlug && showPersonsList)
@@ -139,7 +140,20 @@ export default function TrekListScreen() {
 
                 <TouchableOpacity
                   style={styles.iconBtn}
-                  onPress={() => removeTrek(item.trekSlug)}
+                  onPress={() =>
+                    Alert.alert(
+                      "Delete trek",
+                      `Are you sure you want to delete "${item.trekName}"? This cannot be undone.`,
+                      [
+                        { text: "Cancel", style: "cancel" },
+                        {
+                          text: "Delete",
+                          style: "destructive",
+                          onPress: () => removeTrek(item.trekSlug),
+                        },
+                      ]
+                    )
+                  }
                 >
                   <Image
                     source={require("../assets/images/icons/delete.png")}
