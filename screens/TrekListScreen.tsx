@@ -64,7 +64,7 @@ export default function TrekListScreen() {
     );
 
   return (
-    <View style={{ flex: 1, marginTop: 30 }}>
+    <View style={{ flex: 1, marginTop: 35 }}>
       <View
         style={{
           padding: 12,
@@ -84,7 +84,7 @@ export default function TrekListScreen() {
           onPress={() => setShowHeaderForm((s) => !s)}
         >
           <Text style={styles.smallBtnText}>
-            {showHeaderForm ? "Close" : "Add"}
+            {showHeaderForm ? "Close" : "Add Trek"}
           </Text>
         </TouchableOpacity>
       </View>
