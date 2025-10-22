@@ -15,7 +15,7 @@ type Props = {
 };
 
 export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
-  const { state, removeExpense } = useContext(TrekContext);
+  const { state, toggleExpenseActive } = useContext(TrekContext);
   const trek = state.treks.find((t) => t.trekSlug === trekSlug);
   if (!trek) return null;
 
@@ -30,6 +30,11 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
   );
 
   const remaining = totalContributed - totalExpenses;
+
+  const activeExpenses = trek.trekExpenseData.expense.filter((e) => e.isActive);
+  const archivedExpenses = trek.trekExpenseData.expense.filter(
+    (e) => !e.isActive
+  );
 
   return (
     <View style={{ flex: 1, marginTop: 30, padding: 12 }}>
@@ -53,38 +58,86 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
 
       <View style={{ marginTop: 12 }}>
         <Text style={styles.section}>Expenses</Text>
-        <FlatList
-          data={trek.trekExpenseData.expense}
-          keyExtractor={(e) => e.name + e.timestamp}
-          renderItem={({ item }) => {
-            const date = item.timestamp ? new Date(item.timestamp) : null;
-            const when = date ? date.toLocaleString() : "";
-            return (
-              <View style={styles.row}>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.text}>
-                    {item.name} — ₹{item.amount}
-                  </Text>
-                  {when ? <Text style={styles.dateText}>{when}</Text> : null}
-                </View>
-                <View
-                  style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
-                >
-                  <Text
-                    style={{ color: item.isActive ? "#06b6d4" : "#94a3b8" }}
+
+        {/* Active expenses */}
+        {activeExpenses.length ? (
+          <FlatList
+            data={activeExpenses}
+            keyExtractor={(e) => e.name + e.timestamp}
+            renderItem={({ item }) => {
+              const date = item.timestamp ? new Date(item.timestamp) : null;
+              const when = date ? date.toLocaleString() : "";
+              return (
+                <View style={styles.row}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.text}>
+                      {item.name} — ₹{item.amount}
+                    </Text>
+                    {when ? <Text style={styles.dateText}>{when}</Text> : null}
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
                   >
-                    {item.isActive ? "Active" : "Inactive"}
-                  </Text>
-                  <TouchableOpacity
-                    onPress={() => removeExpense(trekSlug, item.name)}
-                  >
-                    <Text style={styles.remove}>Remove</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => toggleExpenseActive(trekSlug, item.name)}
+                    ></TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => toggleExpenseActive(trekSlug, item.name)}
+                    >
+                      <Text style={styles.remove}>Archive</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            );
-          }}
-        />
+              );
+            }}
+          />
+        ) : (
+          <Text style={{ color: "#94a3b8" }}>No active expenses</Text>
+        )}
+
+        {/* Inactive / archived expenses */}
+        {archivedExpenses.length ? (
+          <View style={{ marginTop: 25 }}>
+            <Text style={[styles.section, { marginBottom: 6 }]}>Archived</Text>
+            <FlatList
+              data={archivedExpenses}
+              keyExtractor={(e) => e.name + e.timestamp}
+              renderItem={({ item }) => {
+                const date = item.timestamp ? new Date(item.timestamp) : null;
+                const when = date ? date.toLocaleString() : "";
+                return (
+                  <View style={styles.row}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.archiveText}>
+                        {item.name} — ₹{item.amount}
+                      </Text>
+                      {when ? (
+                        <Text style={styles.archiveDateText}>{when}</Text>
+                      ) : null}
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => toggleExpenseActive(trekSlug, item.name)}
+                      >
+                        <Text style={{ color: "#94a3b8" }}>Inactive</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                );
+              }}
+            />
+          </View>
+        ) : null}
       </View>
     </View>
   );
@@ -111,6 +164,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   text: { color: "#e6eef8" },
+  archiveText: { color: "gray", fontSize: 12 },
   dateText: { color: "#94a3b8", fontSize: 12, marginTop: 4 },
+  archiveDateText: { color: "#94a3b8", fontSize: 8, marginTop: 4 },
   remove: { color: "#f87171" },
 });
