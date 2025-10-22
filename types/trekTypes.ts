@@ -8,6 +8,7 @@ export type Expense = {
   name: string;
   amount: number;
   description: string;
+  timestamp: string;
   isActive: boolean;
 };
 

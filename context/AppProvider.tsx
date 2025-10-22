@@ -15,6 +15,7 @@ type TrekContextType = {
   removePerson: (trekSlug: string, personName: string) => void;
   addExpense: (trekSlug: string, expense: Expense) => void;
   removeExpense: (trekSlug: string, expenseName: string) => void;
+  toggleExpenseActive: (trekSlug: string, expenseName: string) => void;
   clearAll: () => void;
   loading: boolean;
 };
@@ -28,6 +29,7 @@ export const TrekContext = createContext<TrekContextType>({
   removePerson: () => {},
   addExpense: () => {},
   removeExpense: () => {},
+  toggleExpenseActive: () => {},
   clearAll: () => {},
   loading: true,
 });
@@ -153,6 +155,24 @@ export const AppProvider = ({ children }: Props) => {
     }));
   };
 
+  const toggleExpenseActive = (trekSlug: string, expenseName: string) => {
+    updateState((prev) => ({
+      treks: prev.treks.map((t) =>
+        t.trekSlug === trekSlug
+          ? {
+              ...t,
+              trekExpenseData: {
+                ...t.trekExpenseData,
+                expense: t.trekExpenseData.expense.map((e) =>
+                  e.name === expenseName ? { ...e, isActive: !e.isActive } : e
+                ),
+              },
+            }
+          : t
+      ),
+    }));
+  };
+
   const clearAll = () => {
     updateState(() => ({ treks: [] }));
   };
@@ -167,6 +187,7 @@ export const AppProvider = ({ children }: Props) => {
         removePerson,
         addExpense,
         removeExpense,
+        toggleExpenseActive,
         clearAll,
         loading,
       }}
