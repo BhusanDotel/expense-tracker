@@ -1,9 +1,10 @@
 import TrexExpenseForm from "@/components/TrexExpenseForm";
 import { TrekContext } from "@/context/AppProvider";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import {
   FlatList,
   StyleSheet,
+  Switch,
   Text,
   TouchableOpacity,
   View,
@@ -16,6 +17,7 @@ type Props = {
 
 export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
   const { state, toggleExpenseActive } = useContext(TrekContext);
+  const [showActive, setShowActive] = useState(true);
   const trek = state.treks.find((t) => t.trekSlug === trekSlug);
   if (!trek) return null;
 
@@ -59,10 +61,67 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
       <TrexExpenseForm trekSlug={trekSlug} />
 
       <View style={{ marginTop: 12 }}>
-        <Text style={styles.section}>Expenses</Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: 8,
+          }}
+        >
+          <Text style={styles.section}>Expenses</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <Text style={{ color: "#94a3b8", marginRight: 8 }}>
+              {showActive ? "Active" : "Archived"}
+            </Text>
+            <Switch value={showActive} onValueChange={setShowActive} />
+          </View>
+        </View>
 
-        {/* Active expenses */}
-        {activeExpenses.length ? (
+        {/* Conditional: show active OR archived list based on switch */}
+        {!showActive ? (
+          archivedExpenses.length ? (
+            <View style={{ marginTop: 6 }}>
+              <FlatList
+                data={archivedExpenses}
+                keyExtractor={(e) => e.name + e.timestamp}
+                renderItem={({ item }) => {
+                  const date = item.timestamp ? new Date(item.timestamp) : null;
+                  const when = date ? date.toLocaleString() : "";
+                  return (
+                    <View style={styles.row}>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.archiveText}>
+                          {item.name} — Rs {item.amount}
+                        </Text>
+                        {when ? (
+                          <Text style={styles.archiveDateText}>{when}</Text>
+                        ) : null}
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          gap: 8,
+                          alignItems: "center",
+                        }}
+                      >
+                        <TouchableOpacity
+                          onPress={() =>
+                            toggleExpenseActive(trekSlug, item.name)
+                          }
+                        >
+                          <Text style={{ color: "#94a3b8" }}>Restore</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }}
+              />
+            </View>
+          ) : (
+            <Text style={{ color: "#94a3b8" }}>No archived expenses</Text>
+          )
+        ) : activeExpenses.length ? (
           <FlatList
             data={activeExpenses}
             keyExtractor={(e) => e.name + e.timestamp}
@@ -86,9 +145,6 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                   >
                     <TouchableOpacity
                       onPress={() => toggleExpenseActive(trekSlug, item.name)}
-                    ></TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => toggleExpenseActive(trekSlug, item.name)}
                     >
                       <Text style={styles.remove}>Archive</Text>
                     </TouchableOpacity>
@@ -100,46 +156,6 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
         ) : (
           <Text style={{ color: "#94a3b8" }}>No active expenses</Text>
         )}
-
-        {/* Inactive / archived expenses */}
-        {archivedExpenses.length ? (
-          <View style={{ marginTop: 25 }}>
-            <Text style={[styles.section, { marginBottom: 6 }]}>Archived</Text>
-            <FlatList
-              data={archivedExpenses}
-              keyExtractor={(e) => e.name + e.timestamp}
-              renderItem={({ item }) => {
-                const date = item.timestamp ? new Date(item.timestamp) : null;
-                const when = date ? date.toLocaleString() : "";
-                return (
-                  <View style={styles.row}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={styles.archiveText}>
-                        {item.name} — Rs {item.amount}
-                      </Text>
-                      {when ? (
-                        <Text style={styles.archiveDateText}>{when}</Text>
-                      ) : null}
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        gap: 8,
-                        alignItems: "center",
-                      }}
-                    >
-                      <TouchableOpacity
-                        onPress={() => toggleExpenseActive(trekSlug, item.name)}
-                      >
-                        <Text style={{ color: "#94a3b8" }}>Inactive</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                );
-              }}
-            />
-          </View>
-        ) : null}
       </View>
     </View>
   );
