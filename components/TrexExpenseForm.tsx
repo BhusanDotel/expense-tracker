@@ -54,10 +54,13 @@ export default function TrexExpenseForm({ trekSlug }: Props) {
           <TextInput
             placeholder="Dinner, Fuel, etc"
             placeholderTextColor="#9ca3af"
-            style={[styles.input, errors.name && styles.inputError]}
+            style={[styles.inputArea, errors.name && styles.inputError]}
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
+            multiline={true}
+            numberOfLines={4} // Optional
+            textAlignVertical="top" // Keeps text at top on Android
           />
         )}
       />
@@ -122,4 +125,14 @@ const styles = StyleSheet.create({
   },
   chipText: { color: "#cbd5e1" },
   small: { color: "#64748b" },
+  inputArea: {
+    backgroundColor: "#020617",
+    color: "#fff",
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#1f2937",
+    marginBottom: 8,
+    height: 150,
+  },
 });
