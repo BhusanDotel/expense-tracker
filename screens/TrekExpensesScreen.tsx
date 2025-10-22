@@ -2,6 +2,7 @@ import TrexExpenseForm from "@/components/TrexExpenseForm";
 import { TrekContext } from "@/context/AppProvider";
 import React, { useContext, useState } from "react";
 import {
+  Alert,
   FlatList,
   StyleSheet,
   Switch,
@@ -107,7 +108,18 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                       >
                         <TouchableOpacity
                           onPress={() =>
-                            toggleExpenseActive(trekSlug, item.name)
+                            Alert.alert(
+                              "Restore expense",
+                              `Restore "${item.name}"?`,
+                              [
+                                { text: "Cancel", style: "cancel" },
+                                {
+                                  text: "Restore",
+                                  onPress: () =>
+                                    toggleExpenseActive(trekSlug, item.name),
+                                },
+                              ]
+                            )
                           }
                         >
                           <Text style={{ color: "#94a3b8" }}>Restore</Text>
@@ -144,7 +156,21 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                     }}
                   >
                     <TouchableOpacity
-                      onPress={() => toggleExpenseActive(trekSlug, item.name)}
+                      onPress={() =>
+                        Alert.alert(
+                          "Archive expense",
+                          `Archive "${item.name}"?`,
+                          [
+                            { text: "Cancel", style: "cancel" },
+                            {
+                              text: "Archive",
+                              onPress: () =>
+                                toggleExpenseActive(trekSlug, item.name),
+                              style: "destructive",
+                            },
+                          ]
+                        )
+                      }
                     >
                       <Text style={styles.remove}>Archive</Text>
                     </TouchableOpacity>
