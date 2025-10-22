@@ -6,6 +6,7 @@ import TrekPersonsScreen from "@/screens/TrekPersonsScreen";
 import React, { useContext, useState } from "react";
 import {
   FlatList,
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -114,7 +115,10 @@ export default function TrekListScreen() {
                     setShowExpensesList(false);
                   }}
                 >
-                  <Text>👥</Text>
+                  <Image
+                    source={require("../assets/images/icons/person.png")}
+                    style={styles.iconImg}
+                  />
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -127,14 +131,20 @@ export default function TrekListScreen() {
                     setShowPersonsList(false);
                   }}
                 >
-                  <Text>🧾</Text>
+                  <Image
+                    source={require("../assets/images/icons/expense.png")}
+                    style={styles.iconImg}
+                  />
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.iconBtn}
                   onPress={() => removeTrek(item.trekSlug)}
                 >
-                  <Text>🗑️</Text>
+                  <Image
+                    source={require("../assets/images/icons/delete.png")}
+                    style={[styles.iconImg, { tintColor: "#f87171" }]}
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -167,6 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  iconImg: { width: 20, height: 20, resizeMode: "contain" },
   listSection: { marginTop: 10 },
   sectionTitle: { color: "#94a3b8", marginBottom: 6 },
   listRow: {
