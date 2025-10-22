@@ -48,10 +48,12 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
 
       <View style={styles.summary}>
         <Text style={styles.summaryText}>
-          Total contributed: ₹{totalContributed}
+          Total contributed: Rs {totalContributed}
         </Text>
-        <Text style={styles.summaryText}>Total expenses: ₹{totalExpenses}</Text>
-        <Text style={styles.summaryText}>Remaining: ₹{remaining}</Text>
+        <Text style={styles.summaryText}>
+          Total expenses: Rs {totalExpenses}
+        </Text>
+        <Text style={styles.summaryText}>Remaining: Rs {remaining}</Text>
       </View>
 
       <TrexExpenseForm trekSlug={trekSlug} />
@@ -71,7 +73,7 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                 <View style={styles.row}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.text}>
-                      {item.name} — ₹{item.amount}
+                      {item.name} — Rs {item.amount}
                     </Text>
                     {when ? <Text style={styles.dateText}>{when}</Text> : null}
                   </View>
@@ -113,7 +115,7 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                   <View style={styles.row}>
                     <View style={{ flex: 1 }}>
                       <Text style={styles.archiveText}>
-                        {item.name} — ₹{item.amount}
+                        {item.name} — Rs {item.amount}
                       </Text>
                       {when ? (
                         <Text style={styles.archiveDateText}>{when}</Text>

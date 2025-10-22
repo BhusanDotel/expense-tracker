@@ -35,7 +35,7 @@ export default function TrekPersonsScreen({ trekSlug, onClose }: Props) {
       </View>
 
       <View style={styles.summary}>
-        <Text style={styles.summaryText}>Total collected: ₹{total}</Text>
+        <Text style={styles.summaryText}>Total collected: Rs {total}</Text>
       </View>
 
       <TrekPersonForm trekSlug={trekSlug} />
@@ -48,7 +48,7 @@ export default function TrekPersonsScreen({ trekSlug, onClose }: Props) {
           renderItem={({ item }) => (
             <View style={styles.row}>
               <Text style={styles.text}>
-                {item.name} — ₹{item.contributionAmount}
+                {item.name} — Rs {item.contributionAmount}
               </Text>
               <TouchableOpacity
                 onPress={() => removePerson(trekSlug, item.name)}

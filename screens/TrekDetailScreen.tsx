@@ -70,12 +70,12 @@ export default function TrekDetailScreen({
 
         <View style={styles.summary}>
           <Text style={styles.summaryText}>
-            Total contributed: ₹{totalContributed}
+            Total contributed: Rs {totalContributed}
           </Text>
           <Text style={styles.summaryText}>
-            Total expenses: ₹{totalExpenses}
+            Total expenses: Rs {totalExpenses}
           </Text>
-          <Text style={styles.summaryText}>Remaining: ₹{remaining}</Text>
+          <Text style={styles.summaryText}>Remaining: Rs {remaining}</Text>
         </View>
 
         <TrexExpenseForm trekSlug={trekSlug} />
@@ -110,7 +110,7 @@ export default function TrekDetailScreen({
           {trek.trekExpenseData.persons.map((p) => (
             <View key={p.name} style={styles.row}>
               <Text style={styles.text}>
-                {p.name} — ₹{p.contributionAmount}
+                {p.name} — Rs {p.contributionAmount}
               </Text>
               <TouchableOpacity onPress={() => removePerson(trekSlug, p.name)}>
                 <Text style={styles.remove}>Remove</Text>
@@ -153,7 +153,7 @@ export default function TrekDetailScreen({
               <View key={e.name + e.timestamp} style={styles.row}>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.text}>
-                    {e.name} — ₹{e.amount}
+                    {e.name} — Rs {e.amount}
                   </Text>
                   {when ? <Text style={styles.dateText}>{when}</Text> : null}
                 </View>

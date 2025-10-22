@@ -52,7 +52,7 @@ export default function ExpenseListScreen({ onBack }: Props) {
               {item.trekExpenseData.expense.map((e) => (
                 <View key={e.name + e.timestamp} style={styles.row}>
                   <Text style={styles.text}>
-                    {e.name} — ₹{e.amount}
+                    {e.name} — Rs {e.amount}
                   </Text>
                   <TouchableOpacity
                     onPress={() => removeExpense(item.trekSlug, e.name)}
