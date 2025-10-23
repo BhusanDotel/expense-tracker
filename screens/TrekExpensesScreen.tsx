@@ -103,9 +103,21 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
 
   const remaining = totalContributed - totalExpenses;
 
-  const activeExpenses = trek.trekExpenseData.expense.filter((e) => e.isActive);
-  const archivedExpenses = trek.trekExpenseData.expense.filter(
-    (e) => !e.isActive
+  // Helper: sort by timestamp descending (latest first).
+  const parseTime = (t: any) => {
+    const v = t || "";
+    const n = Date.parse(v);
+    return Number.isNaN(n) ? 0 : n;
+  };
+
+  const sortByDateDesc = (arr: any[]) =>
+    [...arr].sort((a, b) => parseTime(b.timestamp) - parseTime(a.timestamp));
+
+  const activeExpenses = sortByDateDesc(
+    trek.trekExpenseData.expense.filter((e) => e.isActive)
+  );
+  const archivedExpenses = sortByDateDesc(
+    trek.trekExpenseData.expense.filter((e) => !e.isActive)
   );
 
   return (
