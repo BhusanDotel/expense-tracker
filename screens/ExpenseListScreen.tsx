@@ -55,7 +55,7 @@ export default function ExpenseListScreen({ onBack }: Props) {
                     {e.name} — Rs {e.amount}
                   </Text>
                   <TouchableOpacity
-                    onPress={() => removeExpense(item.trekSlug, e.name)}
+                    onPress={() => removeExpense(item.trekSlug, e.slug)}
                   >
                     <Text style={styles.remove}>Remove</Text>
                   </TouchableOpacity>

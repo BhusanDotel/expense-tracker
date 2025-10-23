@@ -6,6 +6,7 @@ export type Person = {
 
 export type Expense = {
   name: string;
+  slug: string;
   amount: number;
   description: string;
   timestamp: string;

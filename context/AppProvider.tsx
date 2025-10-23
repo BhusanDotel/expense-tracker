@@ -168,7 +168,7 @@ export const AppProvider = ({ children }: Props) => {
         return prev;
       }
       const expenseExists = trek.trekExpenseData.expense.some(
-        (e) => e.name === expense.name
+        (e) => e.slug === expense.slug
       );
       if (expenseExists) {
         Toast.error("Expense already exists");
@@ -182,7 +182,10 @@ export const AppProvider = ({ children }: Props) => {
                 ...t,
                 trekExpenseData: {
                   ...t.trekExpenseData,
-                  expense: [...t.trekExpenseData.expense, expense],
+                  expense: [
+                    ...t.trekExpenseData.expense,
+                    { ...expense, slug: getSlug(expense?.name) },
+                  ],
                 },
               }
             : t
@@ -191,7 +194,7 @@ export const AppProvider = ({ children }: Props) => {
     });
   };
 
-  const removeExpense = (trekSlug: string, expenseName: string) => {
+  const removeExpense = (trekSlug: string, expenseSlug: string) => {
     updateState((prev) => {
       const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
       if (!trek) {
@@ -199,7 +202,7 @@ export const AppProvider = ({ children }: Props) => {
         return prev;
       }
       const expenseExists = trek.trekExpenseData.expense.some(
-        (e) => e.name === expenseName
+        (e) => e.slug === expenseSlug
       );
       if (!expenseExists) {
         Toast.error("Expense not found");
@@ -214,7 +217,7 @@ export const AppProvider = ({ children }: Props) => {
                 trekExpenseData: {
                   ...t.trekExpenseData,
                   expense: t.trekExpenseData.expense.filter(
-                    (e) => e.name !== expenseName
+                    (e) => e.slug !== expenseSlug
                   ),
                 },
               }
@@ -224,7 +227,7 @@ export const AppProvider = ({ children }: Props) => {
     });
   };
 
-  const toggleExpenseActive = (trekSlug: string, expenseName: string) => {
+  const toggleExpenseActive = (trekSlug: string, expenseSlug: string) => {
     updateState((prev) => {
       const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
       if (!trek) {
@@ -232,7 +235,7 @@ export const AppProvider = ({ children }: Props) => {
         return prev;
       }
       const expense = trek.trekExpenseData.expense.find(
-        (e) => e.name === expenseName
+        (e) => e.slug === expenseSlug
       );
       if (!expense) {
         Toast.error("Expense not found");
@@ -248,7 +251,7 @@ export const AppProvider = ({ children }: Props) => {
                 trekExpenseData: {
                   ...t.trekExpenseData,
                   expense: t.trekExpenseData.expense.map((e) =>
-                    e.name === expenseName ? { ...e, isActive: !e.isActive } : e
+                    e.slug === expenseSlug ? { ...e, isActive: !e.isActive } : e
                   ),
                 },
               }
@@ -267,6 +270,11 @@ export const AppProvider = ({ children }: Props) => {
       Toast.success("All treks cleared");
       return { treks: [] };
     });
+  };
+
+  const getSlug = (name: string) => {
+    const randomFourDigitNumber = Math.floor(1000 + Math.random() * 9000);
+    return `${name.toLowerCase().replace(/\s+/g, "-")}-${randomFourDigitNumber}`;
   };
 
   return (

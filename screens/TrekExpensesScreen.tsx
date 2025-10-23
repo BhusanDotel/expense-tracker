@@ -119,7 +119,7 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                                   {
                                     text: "Restore",
                                     onPress: () =>
-                                      toggleExpenseActive(trekSlug, item.name),
+                                      toggleExpenseActive(trekSlug, item.slug),
                                   },
                                 ]
                               )
@@ -170,7 +170,7 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
                               {
                                 text: "Archive",
                                 onPress: () =>
-                                  toggleExpenseActive(trekSlug, item.name),
+                                  toggleExpenseActive(trekSlug, item.slug),
                                 style: "destructive",
                               },
                             ]

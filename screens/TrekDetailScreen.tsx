@@ -168,7 +168,7 @@ export default function TrekDetailScreen({
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => removeExpense(trekSlug, e.name)}
+                    onPress={() => removeExpense(trekSlug, e.slug)}
                   >
                     <Text style={styles.remove}>Delete</Text>
                   </TouchableOpacity>
