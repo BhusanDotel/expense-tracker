@@ -61,7 +61,7 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
 
       <TrexExpenseForm trekSlug={trekSlug} />
 
-      <View style={{ marginTop: 12 }}>
+      <View style={{ marginTop: 12, flex: 1 }}>
         <View
           style={{
             flexDirection: "row",
@@ -79,109 +79,115 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
           </View>
         </View>
 
-        {/* Conditional: show active OR archived list based on switch */}
-        {!showActive ? (
-          archivedExpenses.length ? (
-            <View style={{ marginTop: 6 }}>
-              <FlatList
-                data={archivedExpenses}
-                keyExtractor={(e) => e.name + e.timestamp}
-                renderItem={({ item }) => {
-                  const date = item.timestamp ? new Date(item.timestamp) : null;
-                  const when = date ? date.toLocaleString() : "";
-                  return (
-                    <View style={styles.row}>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.archiveText}>
-                          {item.name} — Rs {item.amount}
-                        </Text>
-                        {when ? (
-                          <Text style={styles.archiveDateText}>{when}</Text>
-                        ) : null}
-                      </View>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: 8,
-                          alignItems: "center",
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() =>
-                            Alert.alert(
-                              "Restore expense",
-                              `Restore "${item.name}"?`,
-                              [
-                                { text: "Cancel", style: "cancel" },
-                                {
-                                  text: "Restore",
-                                  onPress: () =>
-                                    toggleExpenseActive(trekSlug, item.name),
-                                },
-                              ]
-                            )
-                          }
+        <View style={{ flex: 1 }}>
+          {/* Conditional: show active OR archived list based on switch */}
+          {!showActive ? (
+            archivedExpenses.length ? (
+              <View style={{ marginTop: 6 }}>
+                <FlatList
+                  data={archivedExpenses}
+                  keyExtractor={(e) => e.name + e.timestamp}
+                  renderItem={({ item }) => {
+                    const date = item.timestamp
+                      ? new Date(item.timestamp)
+                      : null;
+                    const when = date ? date.toLocaleString() : "";
+                    return (
+                      <View style={styles.row}>
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.archiveText}>
+                            {item.name} — Rs {item.amount}
+                          </Text>
+                          {when ? (
+                            <Text style={styles.archiveDateText}>{when}</Text>
+                          ) : null}
+                        </View>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            gap: 8,
+                            alignItems: "center",
+                          }}
                         >
-                          <Text style={{ color: "#94a3b8" }}>Restore</Text>
-                        </TouchableOpacity>
+                          <TouchableOpacity
+                            onPress={() =>
+                              Alert.alert(
+                                "Restore expense",
+                                `Restore "${item.name}"?`,
+                                [
+                                  { text: "Cancel", style: "cancel" },
+                                  {
+                                    text: "Restore",
+                                    onPress: () =>
+                                      toggleExpenseActive(trekSlug, item.name),
+                                  },
+                                ]
+                              )
+                            }
+                          >
+                            <Text style={{ color: "#94a3b8" }}>Restore</Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
+                    );
+                  }}
+                />
+              </View>
+            ) : (
+              <Text style={{ color: "#94a3b8" }}>No archived expenses</Text>
+            )
+          ) : activeExpenses.length ? (
+            <FlatList
+              data={activeExpenses}
+              keyExtractor={(e) => e.name + e.timestamp}
+              renderItem={({ item }) => {
+                const date = item.timestamp ? new Date(item.timestamp) : null;
+                const when = date ? date.toLocaleString() : "";
+                return (
+                  <View style={styles.row}>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.text}>
+                        {item.name} — Rs {item.amount}
+                      </Text>
+                      {when ? (
+                        <Text style={styles.dateText}>{when}</Text>
+                      ) : null}
                     </View>
-                  );
-                }}
-              />
-            </View>
-          ) : (
-            <Text style={{ color: "#94a3b8" }}>No archived expenses</Text>
-          )
-        ) : activeExpenses.length ? (
-          <FlatList
-            data={activeExpenses}
-            keyExtractor={(e) => e.name + e.timestamp}
-            renderItem={({ item }) => {
-              const date = item.timestamp ? new Date(item.timestamp) : null;
-              const when = date ? date.toLocaleString() : "";
-              return (
-                <View style={styles.row}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.text}>
-                      {item.name} — Rs {item.amount}
-                    </Text>
-                    {when ? <Text style={styles.dateText}>{when}</Text> : null}
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      gap: 8,
-                      alignItems: "center",
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={() =>
-                        Alert.alert(
-                          "Archive expense",
-                          `Archive "${item.name}"?`,
-                          [
-                            { text: "Cancel", style: "cancel" },
-                            {
-                              text: "Archive",
-                              onPress: () =>
-                                toggleExpenseActive(trekSlug, item.name),
-                              style: "destructive",
-                            },
-                          ]
-                        )
-                      }
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 8,
+                        alignItems: "center",
+                      }}
                     >
-                      <Text style={styles.remove}>Archive</Text>
-                    </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() =>
+                          Alert.alert(
+                            "Archive expense",
+                            `Archive "${item.name}"?`,
+                            [
+                              { text: "Cancel", style: "cancel" },
+                              {
+                                text: "Archive",
+                                onPress: () =>
+                                  toggleExpenseActive(trekSlug, item.name),
+                                style: "destructive",
+                              },
+                            ]
+                          )
+                        }
+                      >
+                        <Text style={styles.remove}>Archive</Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              );
-            }}
-          />
-        ) : (
-          <Text style={{ color: "#94a3b8" }}>No active expenses</Text>
-        )}
+                );
+              }}
+            />
+          ) : (
+            <Text style={{ color: "#94a3b8" }}>No active expenses</Text>
+          )}
+        </View>
       </View>
     </View>
   );
