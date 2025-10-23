@@ -77,104 +77,196 @@ export const AppProvider = ({ children }: Props) => {
         Toast.error("Trek already exists!");
         return prev; // Do not add duplicate
       }
+      Toast.success("Trek added successfully");
       return { treks: [...prev.treks, trek] };
     });
   };
 
   const removeTrek = (trekSlug: string) => {
-    updateState((prev) => ({
-      treks: prev.treks.filter((t) => t.trekSlug !== trekSlug),
-    }));
+    updateState((prev) => {
+      const exists = prev.treks.some((t) => t.trekSlug === trekSlug);
+      if (!exists) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      Toast.success("Trek removed successfully");
+      return {
+        treks: prev.treks.filter((t) => t.trekSlug !== trekSlug),
+      };
+    });
   };
 
   const addPerson = (trekSlug: string, person: Person) => {
-    updateState((prev) => ({
-      treks: prev.treks.map((t) =>
-        t.trekSlug === trekSlug
-          ? {
-              ...t,
-              trekExpenseData: {
-                ...t.trekExpenseData,
-                persons: [...t.trekExpenseData.persons, person],
-              },
-            }
-          : t
-      ),
-    }));
+    updateState((prev) => {
+      const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
+      if (!trek) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      const personExists = trek.trekExpenseData.persons.some(
+        (p) => p.name === person.name
+      );
+      if (personExists) {
+        Toast.error("Person already exists");
+        return prev;
+      }
+      Toast.success("Person added successfully");
+      return {
+        treks: prev.treks.map((t) =>
+          t.trekSlug === trekSlug
+            ? {
+                ...t,
+                trekExpenseData: {
+                  ...t.trekExpenseData,
+                  persons: [...t.trekExpenseData.persons, person],
+                },
+              }
+            : t
+        ),
+      };
+    });
   };
 
   const removePerson = (trekSlug: string, personName: string) => {
-    updateState((prev) => ({
-      treks: prev.treks.map((t) =>
-        t.trekSlug === trekSlug
-          ? {
-              ...t,
-              trekExpenseData: {
-                ...t.trekExpenseData,
-                persons: t.trekExpenseData.persons.filter(
-                  (p) => p.name !== personName
-                ),
-              },
-            }
-          : t
-      ),
-    }));
+    updateState((prev) => {
+      const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
+      if (!trek) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      const personExists = trek.trekExpenseData.persons.some(
+        (p) => p.name === personName
+      );
+      if (!personExists) {
+        Toast.error("Person not found");
+        return prev;
+      }
+      Toast.success("Person removed successfully");
+      return {
+        treks: prev.treks.map((t) =>
+          t.trekSlug === trekSlug
+            ? {
+                ...t,
+                trekExpenseData: {
+                  ...t.trekExpenseData,
+                  persons: t.trekExpenseData.persons.filter(
+                    (p) => p.name !== personName
+                  ),
+                },
+              }
+            : t
+        ),
+      };
+    });
   };
 
   const addExpense = (trekSlug: string, expense: Expense) => {
-    updateState((prev) => ({
-      treks: prev.treks.map((t) =>
-        t.trekSlug === trekSlug
-          ? {
-              ...t,
-              trekExpenseData: {
-                ...t.trekExpenseData,
-                expense: [...t.trekExpenseData.expense, expense],
-              },
-            }
-          : t
-      ),
-    }));
+    updateState((prev) => {
+      const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
+      if (!trek) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      const expenseExists = trek.trekExpenseData.expense.some(
+        (e) => e.name === expense.name
+      );
+      if (expenseExists) {
+        Toast.error("Expense already exists");
+        return prev;
+      }
+      Toast.success("Expense added successfully");
+      return {
+        treks: prev.treks.map((t) =>
+          t.trekSlug === trekSlug
+            ? {
+                ...t,
+                trekExpenseData: {
+                  ...t.trekExpenseData,
+                  expense: [...t.trekExpenseData.expense, expense],
+                },
+              }
+            : t
+        ),
+      };
+    });
   };
 
   const removeExpense = (trekSlug: string, expenseName: string) => {
-    updateState((prev) => ({
-      treks: prev.treks.map((t) =>
-        t.trekSlug === trekSlug
-          ? {
-              ...t,
-              trekExpenseData: {
-                ...t.trekExpenseData,
-                expense: t.trekExpenseData.expense.filter(
-                  (e) => e.name !== expenseName
-                ),
-              },
-            }
-          : t
-      ),
-    }));
+    updateState((prev) => {
+      const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
+      if (!trek) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      const expenseExists = trek.trekExpenseData.expense.some(
+        (e) => e.name === expenseName
+      );
+      if (!expenseExists) {
+        Toast.error("Expense not found");
+        return prev;
+      }
+      Toast.success("Expense removed successfully");
+      return {
+        treks: prev.treks.map((t) =>
+          t.trekSlug === trekSlug
+            ? {
+                ...t,
+                trekExpenseData: {
+                  ...t.trekExpenseData,
+                  expense: t.trekExpenseData.expense.filter(
+                    (e) => e.name !== expenseName
+                  ),
+                },
+              }
+            : t
+        ),
+      };
+    });
   };
 
   const toggleExpenseActive = (trekSlug: string, expenseName: string) => {
-    updateState((prev) => ({
-      treks: prev.treks.map((t) =>
-        t.trekSlug === trekSlug
-          ? {
-              ...t,
-              trekExpenseData: {
-                ...t.trekExpenseData,
-                expense: t.trekExpenseData.expense.map((e) =>
-                  e.name === expenseName ? { ...e, isActive: !e.isActive } : e
-                ),
-              },
-            }
-          : t
-      ),
-    }));
+    updateState((prev) => {
+      const trek = prev.treks.find((t) => t.trekSlug === trekSlug);
+      if (!trek) {
+        Toast.error("Trek not found");
+        return prev;
+      }
+      const expense = trek.trekExpenseData.expense.find(
+        (e) => e.name === expenseName
+      );
+      if (!expense) {
+        Toast.error("Expense not found");
+        return prev;
+      }
+      const newIsActive = !expense.isActive;
+      Toast.info(newIsActive ? "Expense activated" : "Expense deactivated");
+      return {
+        treks: prev.treks.map((t) =>
+          t.trekSlug === trekSlug
+            ? {
+                ...t,
+                trekExpenseData: {
+                  ...t.trekExpenseData,
+                  expense: t.trekExpenseData.expense.map((e) =>
+                    e.name === expenseName ? { ...e, isActive: !e.isActive } : e
+                  ),
+                },
+              }
+            : t
+        ),
+      };
+    });
   };
 
   const clearAll = () => {
-    updateState(() => ({ treks: [] }));
+    updateState((prev) => {
+      if (!prev.treks || prev.treks.length === 0) {
+        Toast.info("No treks to clear");
+        return prev;
+      }
+      Toast.success("All treks cleared");
+      return { treks: [] };
+    });
   };
 
   return (
