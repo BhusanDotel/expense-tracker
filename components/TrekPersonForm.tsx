@@ -43,7 +43,7 @@ export default function TrekPersonForm({ trekSlug }: Props) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add person</Text>
+      <Text style={styles.title}>Add Trekker</Text>
 
       <Text style={styles.label}>Name</Text>
       <Controller

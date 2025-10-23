@@ -34,7 +34,7 @@ export default function ExpenseListScreen({ onBack }: Props) {
             <Text style={styles.title}>{item.trekName}</Text>
 
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>People</Text>
+              <Text style={styles.sectionTitle}>Trekkers</Text>
               {item.trekExpenseData.persons.map((p) => (
                 <View key={p.name} style={styles.row}>
                   <Text style={styles.text}>{p.name}</Text>

@@ -91,7 +91,7 @@ export default function TrekDetailScreen({
               alignItems: "center",
             }}
           >
-            <Text style={styles.section}>People</Text>
+            <Text style={styles.section}>Trekkers</Text>
             <TouchableOpacity
               style={{
                 paddingVertical: 6,

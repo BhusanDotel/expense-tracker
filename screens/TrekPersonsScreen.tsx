@@ -30,7 +30,7 @@ export default function TrekPersonsScreen({ trekSlug, onClose }: Props) {
         <TouchableOpacity onPress={onClose}>
           <Text style={{ color: "#06b6d4" }}>← Back</Text>
         </TouchableOpacity>
-        <Text style={styles.title}>People — {trek.trekName}</Text>
+        <Text style={styles.title}>Trekkers — {trek.trekName}</Text>
         <View style={{ width: 48 }} />
       </View>
 
@@ -41,7 +41,7 @@ export default function TrekPersonsScreen({ trekSlug, onClose }: Props) {
       <TrekPersonForm trekSlug={trekSlug} />
 
       <View style={{ marginTop: 12 }}>
-        <Text style={styles.section}>People</Text>
+        <Text style={styles.section}>Trekkers</Text>
         <FlatList
           data={trek.trekExpenseData.persons}
           keyExtractor={(p) => p.name}

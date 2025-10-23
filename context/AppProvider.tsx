@@ -107,10 +107,10 @@ export const AppProvider = ({ children }: Props) => {
         (p) => p.name === person.name
       );
       if (personExists) {
-        Toast.error("Person already exists");
+        Toast.error("Trekker already exists");
         return prev;
       }
-      Toast.success("Person added successfully");
+      Toast.success("Trekker added successfully");
       return {
         treks: prev.treks.map((t) =>
           t.trekSlug === trekSlug
@@ -138,10 +138,10 @@ export const AppProvider = ({ children }: Props) => {
         (p) => p.name === personName
       );
       if (!personExists) {
-        Toast.error("Person not found");
+        Toast.error("Trekker not found");
         return prev;
       }
-      Toast.success("Person removed successfully");
+      Toast.success("Trekker removed successfully");
       return {
         treks: prev.treks.map((t) =>
           t.trekSlug === trekSlug
