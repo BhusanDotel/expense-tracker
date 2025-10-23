@@ -1,9 +1,12 @@
 import TrexExpenseForm from "@/components/TrexExpenseForm";
 import { TrekContext } from "@/context/AppProvider";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 import React, { useContext, useState } from "react";
 import {
   Alert,
   FlatList,
+  Platform,
   StyleSheet,
   Switch,
   Text,
@@ -21,6 +24,72 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
   const [showActive, setShowActive] = useState(true);
   const trek = state.treks.find((t) => t.trekSlug === trekSlug);
   if (!trek) return null;
+
+  async function handleDownloadPdf(expenses: any[], trekName: string) {
+    // Build simple HTML table
+    const rows = expenses
+      .map((e) => {
+        const date = e.timestamp ? new Date(e.timestamp) : null;
+        const when = date ? date.toLocaleString() : "";
+        return `<tr><td style="padding:8px;border:1px solid #ddd">${when}</td><td style="padding:8px;border:1px solid #ddd">${e.name}</td><td style="padding:8px;border:1px solid #ddd">Rs ${e.amount}</td></tr>`;
+      })
+      .join("");
+
+    const html = `
+      <html>
+        <head>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <style>
+            body{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; padding:24px }
+            table{ border-collapse: collapse; width:100% }
+            th{ text-align:left; padding:8px; border:1px solid #ddd; background:#f3f4f6 }
+          </style>
+        </head>
+        <body>
+          <h2>${trekName} —  Expenses</h2>
+          <table>
+            <thead>
+              <tr><th>Date</th><th>Name</th><th>Amount</th></tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+          </table>
+        </body>
+      </html>
+    `;
+
+    // Use expo-print to create a PDF file
+    try {
+      const { uri } = await Print.printToFileAsync({ html });
+
+      // On web, Print.printToFileAsync returns base64 in uri? Use fallback for web
+      if (Platform.OS === "web") {
+        // Open new window with printable HTML so user can save as PDF
+        const newWindow = window.open();
+        if (newWindow) {
+          newWindow.document.write(html);
+          newWindow.document.close();
+        }
+        return;
+      }
+
+      // For native, share the generated file (or save it)
+      const fileName = `${trekName.replace(/\s+/g, "_")}_expenses.pdf`;
+      // Copy to cache or ensure extension if needed, then share
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: "application/pdf",
+          dialogTitle: fileName,
+        });
+      } else {
+        Alert.alert("Download ready", `PDF saved to: ${uri}`);
+      }
+    } catch (err) {
+      console.warn(err);
+      throw err;
+    }
+  }
 
   const totalContributed = trek.trekExpenseData.persons.reduce(
     (s, p) => s + (p.contributionAmount || 0),
@@ -72,6 +141,24 @@ export default function TrekExpensesScreen({ trekSlug, onClose }: Props) {
         >
           <Text style={styles.section}>Expenses</Text>
           <View style={{ flexDirection: "row", alignItems: "center" }}>
+            {/* Download button placed to left of switch */}
+            {showActive && (
+              <TouchableOpacity
+                onPress={async () => {
+                  // generate and download PDF of active expenses
+                  try {
+                    await handleDownloadPdf(activeExpenses, trek.trekName);
+                  } catch (err) {
+                    console.warn(err);
+                    Alert.alert("Error", "Failed to generate PDF");
+                  }
+                }}
+                style={{ marginRight: 12 }}
+              >
+                <Text style={{ color: "#06b6d4" }}>Download</Text>
+              </TouchableOpacity>
+            )}
+
             <Text style={{ color: "#94a3b8", marginRight: 8 }}>
               {showActive ? "Active" : "Archived"}
             </Text>
