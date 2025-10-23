@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.bhusandev.trekLedger"
+      "package": "com.bhusandev.trekLedger",
+      "newArchEnabled": false
     },
     "web": {
       "bundler": "metro",
